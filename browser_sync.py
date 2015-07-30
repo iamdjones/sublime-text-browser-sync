@@ -1,7 +1,7 @@
 import sublime, sublime_plugin
 import subprocess, sys, os
 import inspect
-import re
+
 
 
 class BrowsersyncCommandBase(sublime_plugin.WindowCommand):
@@ -54,7 +54,7 @@ class ChangeBrowsersyncIndexCommand(BrowsersyncCommandBase):
 class StartBrowsersync(BrowsersyncCommandBase):
 	def run(self):
 
-		scriptPath = inspect.getfile(inspect.currentframe())
+		scriptPath = inspect.getframeinfo(inspect.currentframe()).filename
 		scriptDir = os.path.dirname(scriptPath)
 
 		os.chdir(scriptDir)
@@ -62,14 +62,11 @@ class StartBrowsersync(BrowsersyncCommandBase):
 		files = ",".join(sorted(self.watchPaths))
 		index = sorted(self.startFiles)[BrowsersyncCommandBase.startFileIndex]
 		server = os.path.dirname(index)
-		
 
+		index = index.replace(server + "\\", "")
 
-		startPath = index.replace(server + "\\", "")
-		index = startPath
+		res = os.system('taskkill /im bs-node.exe /f /t')
 
-		res = os.system('taskkill /im node.exe /f /t')
-
-		cmd = 'node browser_sync_launch.js --server "{0}" --files "{1}" --index "{2}" --startPath "{3}"'
-		cmd = cmd.format(server,files, index, startPath)
+		cmd = 'bs-node browser_sync_launch.js "{0}" "{1}" "{2}"'
+		cmd = cmd.format(server,files, index)
 		proc = subprocess.Popen(cmd, shell=True)

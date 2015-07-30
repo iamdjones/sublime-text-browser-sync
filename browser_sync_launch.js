@@ -1,17 +1,12 @@
-var argv = require('minimist')(process.argv.slice(2));
-var bs = require('browser-sync').create('ST3');
+var bs = require('./node_modules/browser-sync/index.js').create('ST3');
 
-setTimeout(startUp,0)
+args = process.argv.slice(2);
 
-function startUp(){
-	bs.init({
-	server:argv.server,
-	files:argv.files.split(','),
-	index:argv.index,
-	startPath:argv.startPath,
+bs.init({
+	server:args[0],
+	files:args[1].split(','),
+	index:args[2],
+	startPath:args[2],
 	logLevel:"silent",
 	browser:"chrome"
-	});
-}
-
-console.log('finished');
+});
