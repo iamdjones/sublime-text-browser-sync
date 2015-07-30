@@ -1,0 +1,34 @@
+[
+	{
+		"caption":"Browser Sync",
+		"mnemonic":"B",
+		"id":"BrowserSync",
+		"children":
+		[
+			{
+				"caption": "Start File",
+				"children":
+				[
+					{"command":"change_browsersync_index", "args":{"index":0},"checkbox":true},
+					{"command":"change_browsersync_index", "args":{"index":1},"checkbox":true},
+					{"command":"change_browsersync_index", "args":{"index":2},"checkbox":true},
+					{"command":"change_browsersync_index", "args":{"index":3},"checkbox":true},
+					{"command":"change_browsersync_index", "args":{"index":4},"checkbox":true},
+					{"command":"change_browsersync_index", "args":{"index":5},"checkbox":true},
+					{"command":"change_browsersync_index", "args":{"index":6},"checkbox":true},
+					{"command":"change_browsersync_index", "args":{"index":7},"checkbox":true},
+					{"command":"change_browsersync_index", "args":{"index":8},"checkbox":true},
+					{"command":"change_browsersync_index", "args":{"index":9},"checkbox":true},
+				]
+			},
+			{
+				"caption":"Launch",
+				"command":"start_browsersync"
+
+			}
+
+		]
+
+	}
+
+]
