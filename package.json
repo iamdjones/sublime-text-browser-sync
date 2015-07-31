@@ -1,0 +1,23 @@
+{
+  "name": "local_browser_sync",
+  "version": "0.0.0",
+  "description": "Testing Browser Sync Package Locally with ST3",
+  "main": "browser_sync_launch.js",
+  "dependencies": {
+    "browser-sync": "^2.8.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamdjones/sublime-text-browser-sync.git"
+  },
+  "author": "Devon Jones",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/iamdjones/sublime-text-browser-sync/issues"
+  },
+  "homepage": "https://github.com/iamdjones/sublime-text-browser-sync#readme"
+}
