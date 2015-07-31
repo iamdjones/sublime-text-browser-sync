@@ -18,7 +18,7 @@ class BrowsersyncCommandBase(sublime_plugin.WindowCommand):
 		viewPaths = {view.file_name() for view in window.views()}
 		folders = {folder for folder in window.folders()}
 
-		self.startFiles |= {os.path.join(root,f) for folder in self.window.folders() for root,dirs,files in os.walk(folder) for f in files}
+		#self.startFiles |= {os.path.join(root,f) for folder in self.window.folders() for root,dirs,files in os.walk(folder) for f in files}
 		self.startFiles |= viewPaths
 
 		self.watchPaths |= {folder + "\\**" for folder in folders}
