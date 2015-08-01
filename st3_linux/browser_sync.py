@@ -4,54 +4,65 @@ import inspect
 
 
 
-class BrowsersyncCommandBase(sublime_plugin.WindowCommand):
+def plugin_loaded():
+	BrowsersyncListener.loadFiles();
 
+
+class BrowsersyncState:
 	startFileIndex = 0
 	startDirIndex = 0
 	startFiles = set()
 	watchPaths = set()
 
+class BrowsersyncListener(sublime_plugin.EventListener):
 
-	def __init__(self, window):
-		super().__init__(window)
+	def on_load(self, view):
+		BrowsersyncListener.loadFiles()
 
+	def post_window_command(self, window, window_command_name,args):
+		BrowsersyncListener.loadFiles()
+
+	def on_new(self, view):
+		BrowsersyncListener.loadFiles()
+
+	def loadFiles():
+		window = sublime.active_window()
+
+		print("loading files")
 		viewPaths = {view.file_name() for view in window.views()}
 		folders = {folder for folder in window.folders()}
 
 		#self.startFiles |= {os.path.join(root,f) for folder in self.window.folders() for root,dirs,files in os.walk(folder) for f in files}
-		self.startFiles |= viewPaths
+		BrowsersyncState.startFiles = viewPaths
 
-		self.watchPaths |= {folder + "\\**" for folder in folders}
-		self.watchPaths |= viewPaths
-
-	def run(self, index):
-		None
+		BrowsersyncState.watchPaths = {folder + "\\**" for folder in folders}
+		BrowsersyncState.watchPaths |= viewPaths
 
 
 
-class ChangeBrowsersyncIndexCommand(BrowsersyncCommandBase):
+class ChangeBrowsersyncIndexCommand(sublime_plugin.ApplicationCommand):
 	
 	def description(self, index):
 		try:
-			return sorted(self.startFiles)[index]
+			return sorted(BrowsersyncState.startFiles)[index]
 		except IndexError:
 			return ""
 
 	def is_visible(self, index):
 		try:
-			derp = sorted(self.startFiles)[index]
+			derp = sorted(BrowsersyncState.startFiles)[index]
 			return True
 		except IndexError:
 			return False
 
 	def is_checked(self,index):
-		return BrowsersyncCommandBase.startFileIndex == index
+		return BrowsersyncState.startFileIndex == index
 	
 	def run(self,index):
-		BrowsersyncCommandBase.startFileIndex = index
+		BrowsersyncState.startFileIndex = index
 
 
-class StartBrowsersync(BrowsersyncCommandBase):
+class StartBrowsersync(sublime_plugin.ApplicationCommand):
 	def run(self):
 
 		scriptPath = inspect.getframeinfo(inspect.currentframe()).filename
@@ -59,8 +70,8 @@ class StartBrowsersync(BrowsersyncCommandBase):
 
 		os.chdir(scriptDir)
 
-		files = ",".join(sorted(self.watchPaths))
-		index = sorted(self.startFiles)[BrowsersyncCommandBase.startFileIndex]
+		files = ",".join(sorted(BrowsersyncState.watchPaths))
+		index = sorted(BrowsersyncState.startFiles)[BrowsersyncState.startFileIndex]
 		server = os.path.dirname(index)
 
 		index = index.replace(server + "\\", "")
