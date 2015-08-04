@@ -28,7 +28,6 @@ class BrowsersyncListener(sublime_plugin.EventListener):
 	def loadFiles():
 		window = sublime.active_window()
 
-		print("loading files")
 		viewPaths = {view.file_name() for view in window.views()}
 		folders = {folder for folder in window.folders()}
 
@@ -76,8 +75,24 @@ class StartBrowsersync(sublime_plugin.ApplicationCommand):
 
 		index = index.replace(server + "\\", "")
 
-		res = os.system('taskkill /im bs-node.exe /f /t')
+		plat = sublime.platform()
 
-		cmd = 'bs-node browser_sync_launch.js "{0}" "{1}" "{2}"'
-		cmd = cmd.format(server,files, index)
-		proc = subprocess.Popen(cmd, shell=True)
+		killMethod = {
+			'osx': 'killall -KILL node-osx',
+			'linux': 'pkill -x node-linux',
+			'windows': 'taskkill /im node-windows.exe /f /t'
+		}.get(plat)
+
+		os.system(killMethod)
+
+		cmd = 'node-{0} browser_sync_launch.js "{1}" "{2}" "{3}"'
+		cmd = cmd.format(plat, server,files, index)
+
+		sublime.set_timeout_async(self.make_callback(cmd), 0)
+
+
+	def make_callback(self, cmd):
+		def callback():
+			proc = subprocess.Popen(cmd,shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+			print(proc.communicate()[1])
+		return callback

@@ -1,4 +1,4 @@
-var bs = require('./node_modules/browser-sync/index.js').create('ST3');
+var bs = require('browser-sync').create('ST3');
 
 args = process.argv.slice(2);
 
